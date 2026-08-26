@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: oven-sh/setup-bun@v3
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 

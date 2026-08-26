@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - uses: oven-sh/setup-bun@v3
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
