@@ -31,7 +31,6 @@ export default tseslint.config(
       "complexity": ["error", 10],
       "import/no-restricted-paths": ["error", {
         zones: [
-          { target: "./src/tools", from: "./src/client" },
           { target: "./src/client", from: "./src/tools" }
         ]
       }]
