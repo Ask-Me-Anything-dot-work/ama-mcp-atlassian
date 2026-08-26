@@ -6,6 +6,8 @@ export function setupConfigTest(): void {
   beforeEach(() => {
     vi.resetModules();
     process.env = { ...envBackup };
+    delete process.env.ATLASSIAN_EMAIL;
+    delete process.env.ATLASSIAN_API_TOKEN;
     delete process.env.ATLASSIAN_ACCESS_TOKEN;
     delete process.env.ATLASSIAN_CLOUD_ID;
     delete process.env.REGISTRY_URL;

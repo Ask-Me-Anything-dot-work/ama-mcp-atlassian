@@ -1,4 +1,4 @@
-import type { Secrets, TokenCache } from "./types.js";
+import type { AuthConfig, Secrets, TokenCache } from "./types.js";
 
 const REFRESH_BUFFER_MS = 5 * 60 * 1000;
 
@@ -38,38 +38,62 @@ async function fetchFromRegistry(): Promise<TokenCache> {
   };
 }
 
-function resolveStandalone(): TokenCache | null {
+function resolveBasicAuth(): AuthConfig | null {
+  const email = env("ATLASSIAN_EMAIL");
+  const apiToken = env("ATLASSIAN_API_TOKEN");
+  const cloudId = env("ATLASSIAN_CLOUD_ID");
+  if (!email || !apiToken || !cloudId) return null;
+
+  return { mode: "basic", email, apiToken, cloudId };
+}
+
+function resolveOAuth(): AuthConfig | null {
   const token = env("ATLASSIAN_ACCESS_TOKEN");
   const cloudId = env("ATLASSIAN_CLOUD_ID");
   if (!token || !cloudId) return null;
 
-  return {
-    token,
-    cloudId,
-    expiresAt: Number.MAX_SAFE_INTEGER,
-  };
+  return { mode: "oauth2", token, cloudId };
 }
 
 function isExpired(c: TokenCache): boolean {
   return Date.now() >= c.expiresAt - REFRESH_BUFFER_MS;
 }
 
-async function load(): Promise<TokenCache> {
-  const standalone = resolveStandalone();
-  if (standalone) return standalone;
+async function loadTokenCache(): Promise<TokenCache> {
+  const basicAuth = resolveBasicAuth();
+  if (basicAuth && basicAuth.mode === "basic") {
+    return { token: basicAuth.apiToken, cloudId: basicAuth.cloudId, expiresAt: Number.MAX_SAFE_INTEGER };
+  }
+
+  const oauth = resolveOAuth();
+  if (oauth && oauth.mode === "oauth2") {
+    return { token: oauth.token, cloudId: oauth.cloudId, expiresAt: Number.MAX_SAFE_INTEGER };
+  }
+
   return fetchFromRegistry();
+}
+
+export async function getAuthConfig(): Promise<AuthConfig> {
+  const basicAuth = resolveBasicAuth();
+  if (basicAuth) return basicAuth;
+
+  const oauth = resolveOAuth();
+  if (oauth) return oauth;
+
+  const cached = await loadTokenCache();
+  return { mode: "registry", token: cached.token, cloudId: cached.cloudId, expiresAt: cached.expiresAt };
 }
 
 export async function getToken(): Promise<string> {
   if (!cache || isExpired(cache)) {
-    cache = await load();
+    cache = await loadTokenCache();
   }
   return cache.token;
 }
 
 export async function getCloudId(): Promise<string> {
   if (!cache || isExpired(cache)) {
-    cache = await load();
+    cache = await loadTokenCache();
   }
   return cache.cloudId;
 }

@@ -13,3 +13,8 @@ export interface TokenCache {
   cloudId: string;
   expiresAt: number;
 }
+
+export type AuthConfig =
+  | { mode: "basic"; email: string; apiToken: string; cloudId: string }
+  | { mode: "oauth2"; token: string; cloudId: string }
+  | { mode: "registry"; token: string; cloudId: string; expiresAt: number };

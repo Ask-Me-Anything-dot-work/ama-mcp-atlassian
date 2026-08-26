@@ -23,8 +23,9 @@ Add to your `claude_desktop_config.json`:
       "command": "bunx",
       "args": ["@ama-work/mcp-atlassian"],
       "env": {
-        "ATLASSIAN_ACCESS_TOKEN": "your-oauth-access-token",
-        "ATLASSIAN_CLOUD_ID": "your-atlassian-cloud-id"
+        "ATLASSIAN_EMAIL": "you@company.com",
+        "ATLASSIAN_API_TOKEN": "your-api-token",
+        "ATLASSIAN_CLOUD_ID": "your-cloud-id"
       }
     }
   }
@@ -33,21 +34,22 @@ Add to your `claude_desktop_config.json`:
 
 ### Standalone mode
 
-Provide an Atlassian OAuth access token and your cloud ID directly:
+Provide your Atlassian credentials directly via environment variables.
 
-```json
-{
-  "mcpServers": {
-    "atlassian": {
-      "command": "bunx",
-      "args": ["@ama-work/mcp-atlassian"],
-      "env": {
-        "ATLASSIAN_ACCESS_TOKEN": "your-oauth-access-token",
-        "ATLASSIAN_CLOUD_ID": "your-atlassian-cloud-id"
-      }
-    }
-  }
-}
+**1. Create an API token:**
+
+Go to [Atlassian API Tokens](https://id.atlassian.com/manage-profile/security/api-tokens) and create a new token.
+
+**2. Find your Cloud ID:**
+
+Your Cloud ID is the first part of your Atlassian URL. For example, if your Jira is at `https://mycompany.atlassian.net`, your Cloud ID is `mycompany`.
+
+**3. Configure the env vars:**
+
+```
+ATLASSIAN_EMAIL=you@company.com
+ATLASSIAN_API_TOKEN=ATATT3xFfGF0...
+ATLASSIAN_CLOUD_ID=mycompany
 ```
 
 ### Registry-integrated mode
@@ -79,15 +81,6 @@ Import the canonical definition via URL:
 ```
 https://raw.githubusercontent.com/Ask-Me-Anything-dot-work/ama-mcp-atlassian/main/definitions/atlassian.json
 ```
-
-### OAuth Setup
-
-Before using this server, register an OAuth 2.0 app at [developer.atlassian.com](https://developer.atlassian.com):
-
-1. Create a new OAuth 2.0 app
-2. Add the required scopes (see `definitions/atlassian.json`)
-3. Copy the **Client ID** and replace `YOUR_ATLASSIAN_CLIENT_ID` in the definition
-4. Generate an access token with the required scopes
 
 ## Tools
 
