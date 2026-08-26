@@ -1,0 +1,37 @@
+{
+  "id": "atlassian",
+  "name": "Atlassian (Jira + Confluence)",
+  "version": "0.1.0",
+  "type": "stdio",
+  "description": "Standalone MCP server wrapping the Atlassian REST API (Jira + Confluence)",
+  "command": "bunx",
+  "args": ["@ama-work/mcp-atlassian"],
+  "auth_strategy": "static_oauth",
+  "oauth_config": {
+    "authorization_url": "https://auth.atlassian.com/authorize",
+    "token_url": "https://auth.atlassian.com/oauth/token",
+    "scopes": [
+      "read:jira-work",
+      "write:jira-work",
+      "read:confluence-content.all",
+      "write:confluence-content",
+      "read:me",
+      "offline_access"
+    ],
+    "client_id": "YOUR_ATLASSIAN_CLIENT_ID"
+  },
+  "required_env_vars": [
+    {
+      "key": "ATLASSIAN_ACCESS_TOKEN",
+      "description": "Atlassian OAuth access token",
+      "required": true
+    },
+    {
+      "key": "ATLASSIAN_CLOUD_ID",
+      "description": "Your Atlassian cloud ID",
+      "required": true
+    }
+  ],
+  "source_url": "https://github.com/Ask-Me-Anything-dot-work/ama-mcp-atlassian",
+  "source_type": "github"
+}
