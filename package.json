@@ -4,9 +4,7 @@
   "description": "Standalone TypeScript MCP server wrapping the Atlassian REST API (Jira + Confluence)",
   "main": "dist/index.js",
   "type": "module",
-  "publishConfig": {
-    "registry": "http://verdaccio.homelab"
-  },
+
   "scripts": {
     "start": "bun src/index.ts",
     "lint": "tsc --noEmit && knip && eslint .",
@@ -28,7 +26,7 @@
     "@semantic-release/git": "10",
     "@semantic-release/github": "^12.0.9",
     "@semantic-release/npm": "12",
-    "@semantic-release/release-notes-generator": "13",
+    "@semantic-release/release-notes-generator": "12",
     "@types/bun": "^1.3.13",
     "eslint": "^9.0.0",
     "eslint-import-resolver-typescript": "^4.4.4",

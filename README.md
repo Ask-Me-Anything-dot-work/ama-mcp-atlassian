@@ -12,6 +12,25 @@ bunx @ama-work/mcp-atlassian
 
 ## Usage
 
+### Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "atlassian": {
+      "command": "bunx",
+      "args": ["@ama-work/mcp-atlassian"],
+      "env": {
+        "ATLASSIAN_ACCESS_TOKEN": "your-oauth-access-token",
+        "ATLASSIAN_CLOUD_ID": "your-atlassian-cloud-id"
+      }
+    }
+  }
+}
+```
+
 ### Standalone mode
 
 Provide an Atlassian OAuth access token and your cloud ID directly:
@@ -52,6 +71,23 @@ If you run [ama-mcp-registry](https://github.com/Ask-Me-Anything-dot-work/ama-mc
 ```
 
 The token is cached and proactively refreshed 5 minutes before expiry.
+
+## MCP Registry Integration
+
+Import the canonical definition via URL:
+
+```
+https://raw.githubusercontent.com/Ask-Me-Anything-dot-work/ama-mcp-atlassian/main/definitions/atlassian.json
+```
+
+### OAuth Setup
+
+Before using this server, register an OAuth 2.0 app at [developer.atlassian.com](https://developer.atlassian.com):
+
+1. Create a new OAuth 2.0 app
+2. Add the required scopes (see `definitions/atlassian.json`)
+3. Copy the **Client ID** and replace `YOUR_ATLASSIAN_CLIENT_ID` in the definition
+4. Generate an access token with the required scopes
 
 ## Tools
 
