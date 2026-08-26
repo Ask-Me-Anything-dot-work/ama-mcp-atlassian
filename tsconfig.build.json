@@ -7,12 +7,14 @@
     "skipLibCheck": true,
     "allowJs": true,
     "esModuleInterop": true,
-    "noEmit": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "declaration": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "types": ["bun"]
   },
-  "include": ["src/**/*", "scripts/**/*", "tests/**/*", "*.ts"]
+  "include": ["src/**/*"]
 }

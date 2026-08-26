@@ -6,9 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "bun src/index.ts",
+    "build": "tsc --project tsconfig.build.json",
     "lint": "tsc --noEmit && knip && eslint .",
     "test": "vitest run",
     "release": "semantic-release",
+    "prepublishOnly": "bun run build",
     "prepare": "husky"
   },
   "dependencies": {
@@ -20,6 +22,11 @@
   "publishConfig": {
     "access": "public"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
     "@commitlint/cli": "^21.2.0",
     "@commitlint/config-conventional": "^21.2.0",
