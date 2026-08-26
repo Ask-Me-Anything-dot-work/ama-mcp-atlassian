@@ -1,5 +1,5 @@
 import { createCloudClient } from "jira.js";
-import { createV2Client } from "confluence.js";
+import { createV1Client, createV2Client } from "confluence.js";
 import { getToken, getCloudId } from "../config.js";
 import type { Auth } from "jira.js";
 
@@ -18,6 +18,14 @@ export async function createJiraClient() {
 export async function createConfluenceClient() {
   const [token, cloudId] = await Promise.all([getToken(), getCloudId()]);
   return createV2Client({
+    host: "https://api.atlassian.com",
+    auth: { type: "oauth2", accessToken: token, cloudId },
+  });
+}
+
+export async function createConfluenceV1Client() {
+  const [token, cloudId] = await Promise.all([getToken(), getCloudId()]);
+  return createV1Client({
     host: "https://api.atlassian.com",
     auth: { type: "oauth2", accessToken: token, cloudId },
   });
