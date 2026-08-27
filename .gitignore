@@ -7,3 +7,5 @@ logs/
 coverage/
 opencode.json
 .cache/
+.agents/mcp_config.json
+.bootstrap.done
