@@ -3,6 +3,9 @@
   "version": "1.1.0",
   "description": "Standalone TypeScript MCP server wrapping the Atlassian REST API (Jira + Confluence)",
   "main": "dist/index.js",
+  "bin": {
+    "mcp-atlassian": "dist/index.js"
+  },
   "type": "module",
   "scripts": {
     "start": "bun src/index.ts",

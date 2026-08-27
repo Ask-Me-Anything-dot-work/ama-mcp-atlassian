@@ -5,7 +5,7 @@ Standalone TypeScript MCP server wrapping the Atlassian REST API (Jira + Conflue
 ## Install
 
 ```bash
-npm install -g @ama-work/mcp-atlassian
+npx -y @ama-work/mcp-atlassian
 # or
 bunx @ama-work/mcp-atlassian
 ```
@@ -20,8 +20,8 @@ Add to your `claude_desktop_config.json`:
 {
   "mcpServers": {
     "atlassian": {
-      "command": "bunx",
-      "args": ["@ama-work/mcp-atlassian"],
+      "command": "npx",
+      "args": ["-y", "@ama-work/mcp-atlassian"],
       "env": {
         "ATLASSIAN_EMAIL": "you@company.com",
         "ATLASSIAN_API_TOKEN": "your-api-token",
@@ -31,6 +31,8 @@ Add to your `claude_desktop_config.json`:
   }
 }
 ```
+
+> Works with `bunx` too — replace `npx` with `bunx` and remove `-y`.
 
 ### Standalone mode
 
@@ -60,8 +62,8 @@ If you run [ama-mcp-registry](https://github.com/Ask-Me-Anything-dot-work/ama-mc
 {
   "mcpServers": {
     "atlassian": {
-      "command": "bunx",
-      "args": ["@ama-work/mcp-atlassian"],
+      "command": "npx",
+      "args": ["-y", "@ama-work/mcp-atlassian"],
       "env": {
         "REGISTRY_URL": "https://your-registry.example.com",
         "INSTANCE_ID": "your-instance-id",
