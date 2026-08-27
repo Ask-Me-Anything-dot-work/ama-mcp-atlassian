@@ -1,6 +1,6 @@
 {
   "name": "@ama-work/mcp-atlassian",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Standalone TypeScript MCP server wrapping the Atlassian REST API (Jira + Confluence)",
   "main": "dist/index.js",
   "bin": {
