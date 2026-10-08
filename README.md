@@ -92,6 +92,8 @@ https://raw.githubusercontent.com/Ask-Me-Anything-dot-work/ama-mcp-atlassian/mai
 
 **Meta:** `atlassian_whoami`
 
+Tool arguments pass through the MCP gateway verbatim — gateway namespacing (`{instanceId}.{toolName}`) does not affect argument forwarding. Past bugs where `confluence_create_page` dropped `spaceId` (400 `INVALID_REQUEST_BODY`) were server-side request mapping in this repo, fixed against the `confluence.js` v2 client contract (`{ body: { spaceId, title, ... } }` nesting).
+
 ## Development
 
 ```bash

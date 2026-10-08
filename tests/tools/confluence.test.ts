@@ -100,21 +100,47 @@ describe("confluence_create_page", () => {
   let server: ReturnType<typeof createMockServer>;
   beforeEach(() => { vi.clearAllMocks(); server = createMockServer(); registerConfluenceCreateTools(server as never); });
 
-  it("creates page with ADF body", async () => {
+  it("creates page with nested body payload and stringified ADF value", async () => {
     const client = mockV2Client();
     const h = server.handlers.confluence_create_page as (i: Record<string, unknown>) => Promise<unknown>;
     await h({ spaceId: "100", title: "Test", body: "Hello" });
-    expect(client.page.createPage).toHaveBeenCalledWith(expect.objectContaining({
-      spaceId: "100",
-      title: "Test",
-    }));
+    expect(client.page.createPage).toHaveBeenCalledWith({
+      body: {
+        spaceId: "100",
+        title: "Test",
+        status: "current",
+        body: {
+          representation: "atlas_doc_format",
+          value: JSON.stringify({
+            version: 1,
+            type: "doc",
+            content: [{ type: "paragraph", content: [{ type: "text", text: "Hello" }] }],
+          }),
+        },
+      },
+    });
+    const arg = (client.page.createPage as ReturnType<typeof vi.fn>).mock.calls[0][0] as {
+      body: { parentId?: string; body: { value: string } };
+    };
+    expect(arg.body.parentId).toBeUndefined();
+    expect(JSON.parse(arg.body.body.value)).toEqual({
+      version: 1,
+      type: "doc",
+      content: [{ type: "paragraph", content: [{ type: "text", text: "Hello" }] }],
+    });
   });
 
-  it("passes parentId when provided", async () => {
+  it("nests parentId inside body when provided and omits it when not", async () => {
     const client = mockV2Client();
     const h = server.handlers.confluence_create_page as (i: Record<string, unknown>) => Promise<unknown>;
+
     await h({ spaceId: "100", title: "Child", body: "content", parentId: "50" });
-    expect(client.page.createPage).toHaveBeenCalledWith(expect.objectContaining({ parentId: "50" }));
+    let arg = (client.page.createPage as ReturnType<typeof vi.fn>).mock.calls[0][0] as { body: Record<string, unknown> };
+    expect(arg.body).toEqual(expect.objectContaining({ parentId: "50" }));
+
+    await h({ spaceId: "100", title: "Root", body: "content" });
+    arg = (client.page.createPage as ReturnType<typeof vi.fn>).mock.calls[1][0] as { body: Record<string, unknown> };
+    expect("parentId" in arg.body).toBe(false);
   });
 });
 
@@ -126,11 +152,22 @@ describe("confluence_update_page", () => {
     const client = mockV2Client();
     const h = server.handlers.confluence_update_page as (i: Record<string, unknown>) => Promise<unknown>;
     await h({ pageId: "42", title: "Updated", body: "new content", versionNumber: 3 });
-    expect(client.page.updatePage).toHaveBeenCalledWith(expect.objectContaining({
+    expect(client.page.updatePage).toHaveBeenCalledWith({
       id: 42,
-      title: "Updated",
-      version: { number: 4 },
-    }));
+      body: {
+        title: "Updated",
+        status: "current",
+        version: { number: 4 },
+        body: {
+          representation: "atlas_doc_format",
+          value: JSON.stringify({
+            version: 1,
+            type: "doc",
+            content: [{ type: "paragraph", content: [{ type: "text", text: "new content" }] }],
+          }),
+        },
+      },
+    });
   });
 });
 
@@ -142,9 +179,21 @@ describe("confluence_add_comment", () => {
     const client = mockV2Client();
     const h = server.handlers.confluence_add_comment as (i: Record<string, unknown>) => Promise<unknown>;
     await h({ pageId: "42", body: "Nice page!" });
-    expect(client.comment.createFooterComment).toHaveBeenCalledWith(expect.objectContaining({
+    expect(client.comment.createFooterComment).toHaveBeenCalledWith({
       pageId: "42",
-    }));
+      body: {
+        representation: "atlas_doc_format",
+        value: JSON.stringify({
+          version: 1,
+          type: "doc",
+          content: [{ type: "paragraph", content: [{ type: "text", text: "Nice page!" }] }],
+        }),
+      },
+    });
+    const arg = (client.comment.createFooterComment as ReturnType<typeof vi.fn>).mock.calls[0][0] as {
+      body: { value: unknown };
+    };
+    expect(typeof arg.body.value).toBe("string");
   });
 });
 
