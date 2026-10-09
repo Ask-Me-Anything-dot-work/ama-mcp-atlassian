@@ -16,11 +16,14 @@ export function registerConfluenceUpdateTools(server: McpServer): void {
     async ({ pageId, title, body, versionNumber }) => {
       const client = await createConfluenceClient();
       const adfDoc = toADF(body);
-      // updatePage forwards only `parameters.body` — nest title/status/version there and
+      // updatePage uses top-level `id` only as the URL path param; `body` is the HTTP
+      // request body verbatim. Confluence v2 PUT bean-validates the body and requires a
+      // non-null `id` there too (string per PageSchema) — hence `id` in both places.
       // JSON-stringify the ADF value (v2 API expects a string, not an object).
       const params = {
         id: Number(pageId),
         body: {
+          id: pageId,
           title,
           status: "current",
           version: { number: versionNumber + 1 },

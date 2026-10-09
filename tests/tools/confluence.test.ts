@@ -155,6 +155,7 @@ describe("confluence_update_page", () => {
     expect(client.page.updatePage).toHaveBeenCalledWith({
       id: 42,
       body: {
+        id: "42",
         title: "Updated",
         status: "current",
         version: { number: 4 },
@@ -168,6 +169,19 @@ describe("confluence_update_page", () => {
         },
       },
     });
+  });
+
+  it("pins body.id as a string so the API body passes bean validation", async () => {
+    const client = mockV2Client();
+    const h = server.handlers.confluence_update_page as (i: Record<string, unknown>) => Promise<unknown>;
+    await h({ pageId: "42", title: "Updated", body: "new content", versionNumber: 3 });
+    const arg = (client.page.updatePage as ReturnType<typeof vi.fn>).mock.calls[0][0] as {
+      id: number;
+      body: { id?: unknown };
+    };
+    expect(arg.body.id).toBe("42");
+    expect(typeof arg.body.id).toBe("string");
+    expect(arg.id).toBe(42);
   });
 });
 
