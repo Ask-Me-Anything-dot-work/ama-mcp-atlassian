@@ -17,13 +17,18 @@ export function registerConfluenceCreateTools(server: McpServer): void {
     async ({ spaceId, title, body, parentId, status }) => {
       const client = await createConfluenceClient();
       const adfDoc = toADF(body);
+      // confluence.js createPage forwards only `parameters.body` as the HTTP request body,
+      // so page fields must be nested under `body` (flat fields are silently dropped →
+      // API 400 "spaceId: must not be null"). ADF value must be a JSON string per v2 spec.
       const params = {
-        spaceId,
-        title,
-        body: { representation: "atlas_doc_format", value: adfDoc as unknown as string },
-        ...(parentId ? { parentId } : {}),
-        status: status ?? "current",
-      } as Parameters<typeof client.page.createPage>[0];
+        body: {
+          spaceId,
+          title,
+          status: status ?? "current",
+          ...(parentId ? { parentId } : {}),
+          body: { representation: "atlas_doc_format", value: JSON.stringify(adfDoc) },
+        },
+      } satisfies Parameters<typeof client.page.createPage>[0];
       const page = await client.page.createPage(params);
       return {
         content: [{ type: "text" as const, text: JSON.stringify(page, null, 2) }],

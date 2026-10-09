@@ -16,7 +16,7 @@ export function registerConfluenceCommentTools(server: McpServer): void {
       const adfDoc = toADF(body);
       const comment = await client.comment.createFooterComment({
         pageId,
-        body: { representation: "atlas_doc_format", value: adfDoc as unknown as string },
+        body: { representation: "atlas_doc_format", value: JSON.stringify(adfDoc) },
       });
       return {
         content: [{ type: "text" as const, text: JSON.stringify(comment, null, 2) }],

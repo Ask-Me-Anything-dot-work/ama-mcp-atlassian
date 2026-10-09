@@ -16,13 +16,17 @@ export function registerConfluenceUpdateTools(server: McpServer): void {
     async ({ pageId, title, body, versionNumber }) => {
       const client = await createConfluenceClient();
       const adfDoc = toADF(body);
+      // updatePage forwards only `parameters.body` — nest title/status/version there and
+      // JSON-stringify the ADF value (v2 API expects a string, not an object).
       const params = {
         id: Number(pageId),
-        title,
-        body: { representation: "atlas_doc_format", value: adfDoc as unknown as string },
-        version: { number: versionNumber + 1 },
-        status: "current",
-      } as Parameters<typeof client.page.updatePage>[0];
+        body: {
+          title,
+          status: "current",
+          version: { number: versionNumber + 1 },
+          body: { representation: "atlas_doc_format", value: JSON.stringify(adfDoc) },
+        },
+      } satisfies Parameters<typeof client.page.updatePage>[0];
       const page = await client.page.updatePage(params);
       return {
         content: [{ type: "text" as const, text: JSON.stringify(page, null, 2) }],
