@@ -31,3 +31,8 @@ jobs:
 
       - name: Test
         run: bun run test
+
+      - name: Verify dist shebang
+        run: |
+          bun run build
+          head -1 dist/index.js | grep -q '^#!/usr/bin/env node'
