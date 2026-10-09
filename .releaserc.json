@@ -1,7 +1,7 @@
 {
   "branches": ["main"],
   "plugins": [
-    ["@semantic-release/commit-analyzer", {
+    ["./scripts/release-skip-guard.mjs", {
       "preset": "conventionalcommits",
       "parserOpts": { "commentChar": null }
     }],
