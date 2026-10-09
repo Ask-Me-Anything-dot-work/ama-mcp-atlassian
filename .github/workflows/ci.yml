@@ -4,9 +4,32 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, edited, synchronize, reopened]
     branches: [main]
 
 jobs:
+  pr-title:
+    # Squash-merge subjects come from PR titles and never pass the local
+    # husky commitlint hook — a non-conventional title silently skips
+    # semantic-release (see docs/smoke/2026-10-09-confluence-write-tools.md).
+    name: PR Title (conventional)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Lint PR title with commitlint
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: printf '%s\n' "$PR_TITLE" | bunx commitlint
+
   lint-and-test:
     name: Lint & Test
     runs-on: ubuntu-latest
