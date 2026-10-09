@@ -32,6 +32,19 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Fail on non-conventional commits in this push
+        run: |
+          set -euo pipefail
+          BEFORE="${{ github.event.before }}"
+          ZERO="0000000000000000000000000000000000000000"
+          if [ "$BEFORE" != "$ZERO" ] && git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            FROM="$BEFORE"
+          else
+            FROM="$(git describe --tags --abbrev=0 2>/dev/null || echo HEAD~10)"
+          fi
+          echo "Linting commits ${FROM}..${{ github.event.after }}"
+          bunx commitlint --config commitlint.config.ts --from "$FROM" --to "${{ github.event.after }}"
+
       - name: Release
         run: bun run release
         env:

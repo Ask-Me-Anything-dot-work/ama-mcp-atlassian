@@ -28,7 +28,7 @@ jobs:
       - name: Lint PR title with commitlint
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
-        run: printf '%s\n' "$PR_TITLE" | bunx commitlint
+        run: printf '%s\n' "$PR_TITLE" | bunx commitlint --config commitlint.config.ts
 
   lint-and-test:
     name: Lint & Test
