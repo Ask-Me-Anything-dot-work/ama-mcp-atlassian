@@ -24,3 +24,4 @@ The `pr-title` job **hard-fails** CI on a non-conventional PR title. There is no
 - PR titles are now load-bearing for releases.
 - `lint-and-test` also re-runs on `edited` (same `types` list) — extra CI minutes, no correctness impact.
 - ADR-001 / ADR-002 unaffected.
+- Third layer: the semantic-release skip guard (ADR-004) surfaces analyzer skips that the PR-title and commit-range gates cannot catch (conventional-but-wrong-type subjects).
