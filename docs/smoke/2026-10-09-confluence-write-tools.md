@@ -96,6 +96,9 @@ Evidence chain:
 3. **Re-run this smoke after `1.2.2` is published** and the gateway upstream
    has respawned (idle eviction ≤ 300 s after sessions release, or gateway
    restart). Then steps 1–4 are expected to pass.
+   **Re-run outcome:** 1.2.2 attempt failed on step 2 (update path, #26 → #30/#32
+   → `1.2.3`); the 2026-10-13 re-run on `1.2.3` **PASSED** — see
+   [`2026-10-09-confluence-write-tools-1.2.2.md`](./2026-10-09-confluence-write-tools-1.2.2.md).
 
 ## Side effects of this run
 
